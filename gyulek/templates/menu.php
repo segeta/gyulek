@@ -61,16 +61,17 @@
     </div>
 
     <!-- Felhasználók -->
-    <a href="/gyulek/modules/users/index.php" class="menu-item">
-        <i class="bi bi-person-gear"></i> <span>Felhasználók</span>
-    </a>
+    <?php if ($_SESSION['role'] === 'admin'): ?>
+  <a href="/gyulek/modules/users/index.php" class="menu-item">
+    <i class="bi bi-person-gear"></i> <span>Felhasználók</span>
+  </a>
+<?php else: ?>
+  <a href="/gyulek/modules/settings/profile.php" class="menu-item">
+    <i class="bi bi-gear"></i> <span>Beállítások</span>
+  </a>
+<?php endif; ?>
 
-    <!-- Kijelentkezés -->
-    <a href="/gyulek/logout.php" class="menu-item">
-        <i class="bi bi-box-arrow-right"></i> <span>Kijelentkezés</span>
-    </a>
-
-    <!-- Dark mode -->
+       <!-- Dark mode -->
     <div class="menu-item mt-auto">
         <label style="cursor:pointer; display:flex; align-items:center;">
             <input type="checkbox" id="darkModeToggle" style="margin-right:8px;">

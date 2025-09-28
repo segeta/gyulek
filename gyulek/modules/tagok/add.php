@@ -1,36 +1,100 @@
 <?php
-require_once __DIR__ . '/../../core/auth.php';
-check_permission(['admin','lelkesz']);
+require_once __DIR__ . '/../../core/db.php';
+require_once __DIR__ . '/../../core/functions.php';
+session_start();
 
-$message = "";
+// Csak bejelentkezett felhasználók férhetnek hozzá
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /gyulek/login.php");
+    exit;
+}
 
+$error = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $stmt = $pdo->prepare("INSERT INTO members (org_id, name, birth_name, birth_place, birth_date, address, phone, email) 
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    try {
+    $name = trim($_POST['name'] ?? '');
+    $birth_name = trim($_POST['birth_name'] ?? '');
+    $birth_place = trim($_POST['birth_place'] ?? '');
+    $birth_date = $_POST['birth_date'] ?? null;
+    $address = trim($_POST['address'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+
+    if (!$name) {
+        $error = "A név megadása kötelező!";
+    } else {
+        $stmt = $pdo->prepare("
+            INSERT INTO members (name, birth_name, birth_place, birth_date, address, phone, email, org_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
         $stmt->execute([
-            $_SESSION['org_id'],
-            $_POST['name'], $_POST['birth_name'], $_POST['birth_place'],
-            $_POST['birth_date'] ?: null,
-            $_POST['address'], $_POST['phone'], $_POST['email']
+            $name,
+            $birth_name,
+            $birth_place,
+            $birth_date ?: null,
+            $address,
+            $phone,
+            $email,
+            $_SESSION['org_id'] ?? null  // aktuális szervezethez kötjük
         ]);
+
         header("Location: index.php");
         exit;
-    } catch (PDOException $e) {
-        $message = "❌ Hiba: " . $e->getMessage();
     }
 }
+
+include __DIR__ . '/../../templates/header.php';
 ?>
 
-<h2>Új tag</h2>
-<form method="post">
-    <label>Név: <input type="text" name="name" required></label><br>
-    <label>Születési név: <input type="text" name="birth_name"></label><br>
-    <label>Születési hely: <input type="text" name="birth_place"></label><br>
-    <label>Születési dátum: <input type="date" name="birth_date"></label><br>
-    <label>Cím: <input type="text" name="address"></label><br>
-    <label>Telefon: <input type="text" name="phone"></label><br>
-    <label>Email: <input type="email" name="email"></label><br>
-    <button type="submit">Mentés</button>
-</form>
-<p><?= $message ?></p>
+<div class="container mt-4">
+  <div class="card shadow p-4 mx-auto" style="max-width: 600px;">
+    <h2 class="text-center mb-4">Új tag hozzáadása</h2>
+
+    <?php if ($error): ?>
+      <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+
+    <form method="post">
+      <div class="mb-3">
+        <label for="name" class="form-label">Név *</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="birth_name" class="form-label">Születési név</label>
+        <input type="text" class="form-control" id="birth_name" name="birth_name">
+      </div>
+
+      <div class="mb-3">
+        <label for="birth_place" class="form-label">Születési hely</label>
+        <input type="text" class="form-control" id="birth_place" name="birth_place">
+      </div>
+
+      <div class="mb-3">
+        <label for="birth_date" class="form-label">Születési dátum</label>
+        <input type="date" class="form-control" id="birth_date" name="birth_date">
+      </div>
+
+      <div class="mb-3">
+        <label for="address" class="form-label">Lakcím</label>
+        <input type="text" class="form-control" id="address" name="address">
+      </div>
+
+      <div class="mb-3">
+        <label for="phone" class="form-label">Telefon</label>
+        <input type="text" class="form-control" id="phone" name="phone">
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <input type="email" class="form-control" id="email" name="email">
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Mentés</button>
+        <a href="index.php" class="btn btn-secondary">Mégsem</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<?php include __DIR__ . '/../../templates/footer.php'; ?>

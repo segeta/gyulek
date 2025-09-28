@@ -15,7 +15,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($user && verify_password($password, $user['password_hash'])) {
         $_SESSION['user_id'] = $user['id'];
-        header("Location: select_org.php");
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['name'] = $user['name'];
+
+        // Megnézzük, admin-e?
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM user_orgs WHERE user_id = ? AND role = 'admin'");
+        $stmt->execute([$user['id']]);
+        $isAdmin = $stmt->fetchColumn() > 0;
+
+        if ($isAdmin) {
+            header("Location: /gyulek/modules/users/index.php");
+        } else {
+            header("Location: select_org.php");
+        }
         exit;
     } else {
         $error = "Hibás felhasználónév vagy jelszó!";

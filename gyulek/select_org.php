@@ -22,12 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $org_id = (int) ($_POST['org_id'] ?? 0);
     if ($org_id) {
         $_SESSION['org_id'] = $org_id;
-
-        // szerepkör betöltése a user_orgs táblából
         $stmt = $pdo->prepare("SELECT role FROM user_orgs WHERE user_id = ? AND org_id = ?");
-        $stmt->execute([$_SESSION['user_id'], $org_id]);
-        $_SESSION['role'] = $stmt->fetchColumn();
-        
+		$stmt->execute([$_SESSION['user_id'], $org_id]);
+		$_SESSION['role'] = $stmt->fetchColumn();
         header("Location: index.php");
         exit;
     }
