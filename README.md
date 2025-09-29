@@ -77,24 +77,27 @@ Beállítások
 Az éves egyházközségi névjegyzék is itt frissíthető. A program ellenőrzi, hogy mely partnerek esetében jelölt az „Egyházközségi névjegyzék tagság” checkbox. Ezeket a partnereket hozzárendeli „Egyházközségi névjegyzék” és a »részegyház neve« csoporthoz. Később évet és részegyházat választva listázható, menthető vagy nyomtatható a névjegyzék.
 
 Kezdőoldal:
-Bejelentkezést követően a felhasználó egy általános információs kezdőoldalra jut.
-Ezen az oldalon a következő tartalmak láthatók:
-Jobb oldali panel a jelenlegi tartalom, azaz:
-    • felhasználó neve: X.Y.
-    • Szervezet: (üres, még nem jelentkezett be egyik kapcsolt szervezetbe sem)
-    • Szerepkör: (üres, még nem jelentkezett be egyik kapcsolt szervezetbe sem)
-    • Mai nap: 
-    • Névnap: 
-    • Kijelentkezés gomb
 
-Középső törzs oszlop:
-    • Jó reggelt/napot/estét »felhasználó neve«! (napszaktól függően). Örülök, hogy újra itt vagy! Lássuk, milyen tennivalók vannak!
-    • A születésnapját ünnepli ma: »név«, »név« a »szervezeti egység«-ben, holnap: »név«, »név« a »szervezeti egység«-ben, holnapután: »név«, »név« a »szervezeti egység«-ben (felsorolással a szervezeti egységek szerint csoportosítva)
-    • A névnapját ünnepli ma: »név«, »név« a »szervezeti egység«-ben, holnap: »név«, »név« a »szervezeti egység«-ben, holnapután: »név«, »név« a »szervezeti egység«-ben (felsorolással a szervezeti egységek szerint csoportosítva)
-    • Tennivalók ma: »esemény típus« a »szervezeti egység«-ben, holnap: »esemény típus« a »szervezeti egység«-ben, holnapután: »esemény típus« a »szervezeti egység«-ben (felsorolással a szervezeti egységek szerint csoportosítva)
-    • Ellenőrizd, hogy ezek az események valóban megtörténtek-e, és rögzítsd, különben törlődnek: »korábban jövőbeni eseményként létrehozott események, amit még nem szerkesztettek/mentettek«
-    • Melyik intézményben kezdjük? → select_org.php
+Bejelentkezést követően a felhasználó egy általános információs kezdőoldalra jut. Ezen az oldalon a következő tartalmak láthatók:
+
+	Jobb oldali panel a jelenlegi tartalom, azaz:
+	• felhasználó neve: X.Y.
+	• Szervezet: (üres, még nem jelentkezett be egyik kapcsolt szervezetbe sem)
+	• Szerepkör: (üres, még nem jelentkezett be egyik kapcsolt szervezetbe sem)
+	• Mai nap: 
+	• Névnap: 
+	• Kijelentkezés gomb
+
+	Középső törzs oszlop:
+    • "Jó reggelt/napot/estét »felhasználó neve«! (napszaktól függően). Örülök, hogy újra itt vagy! Lássuk, milyen tennivalók vannak!"
+    • "A születésnapját ünnepli ma: »név«, »név« a »szervezeti egység«-ben, holnap: »név«, »név« a »szervezeti egység«-ben, holnapután: »név«, »név« a »szervezeti egység«-ben (felsorolással a szervezeti egységek szerint csoportosítva)"
+    • "A névnapját ünnepli ma: »név«, »név« a »szervezeti egység«-ben, holnap: »név«, »név« a »szervezeti egység«-ben, holnapután: »név«, »név« a »szervezeti egység«-ben (felsorolással a szervezeti egységek szerint csoportosítva)"
+    • "Tennivalók ma: »esemény típus« a »szervezeti egység«-ben, holnap: »esemény típus« a »szervezeti egység«-ben, holnapután: »esemény típus« a »szervezeti egység«-ben (felsorolással a szervezeti egységek szerint csoportosítva)"
+    • "Ellenőrizd, hogy ezek az események valóban megtörténtek-e, és rögzítsd, különben törlődnek: »korábban jövőbeni eseményként létrehozott események, amit még nem szerkesztettek/mentettek«"
+    • "Melyik intézményben kezdjük? → select_org.php"
+
 Intézményi oldal:
-Bal oldali panelen a jelenlegi aktuális elrendezés: Kezdőoldal (Intézményi oldal), Partnerek, Események, Adományok, Iratok, Anyakönyvek, Jelentések, Beállítások
-Jobb oldali panelen a jelenlegi aktuális tartalom és elrendezés
-Középső törzs oszlop: Ugyan az a tartalom, mint a „Kezdőoldal”, de csak a kiválasztott Intézmény (Egyházközség, Egyházmegye, Egyházkerület) adataival információival.
+
+	¤ Bal oldali panelen a jelenlegi aktuális elrendezés: Kezdőoldal (Intézményi oldal), Partnerek, Események, Adományok, Iratok, Anyakönyvek, Jelentések, Beállítások
+	¤ Jobb oldali panelen a jelenlegi aktuális tartalom és elrendezés
+	¤ Középső törzs oszlop: Ugyan az a tartalom, mint a „Kezdőoldal”, de csak a kiválasztott Intézmény (Egyházközség, Egyházmegye, Egyházkerület) adataival információival.
