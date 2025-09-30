@@ -1,37 +1,15 @@
 <?php
-require_once __DIR__ . '/../core/db.php';
-require_once __DIR__ . '/../core/functions.php';
+require_once __DIR__ . '/core/db.php';
+require_once __DIR__ . '/core/functions.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /login.php");
+    header("Location: login.php");
     exit;
 }
 
-/**
- * Lekérdezi a névnapokat a megadott naphoz képest (0 = ma, 1 = holnap, 2 = holnapután).
- */
-function getNamedays($pdo, $offset = 0) {
-    $date = new DateTime();
-    if ($offset !== 0) {
-        $date->modify("+$offset day");
-    }
-    $month = (int)$date->format('n'); // hónap szám (1-12)
-    $day   = (int)$date->format('j'); // nap szám (1-31)
-
-    $stmt = $pdo->prepare("SELECT name FROM namedays WHERE month = ? AND day = ?");
-    $stmt->execute([$month, $day]);
-
-    return $stmt->fetchAll(PDO::FETCH_COLUMN);
-}
-
-// Névnapi adatok
-$today    = getNamedays($pdo, 0);
-$tomorrow = getNamedays($pdo, 1);
-$after    = getNamedays($pdo, 2);
-
-// Napszakos köszöntés
-$hour = (int)date('H');
+// Köszönés napszak szerint
+$hour = date('H');
 if ($hour < 12) {
     $greeting = "Jó reggelt";
 } elseif ($hour < 18) {
@@ -40,82 +18,97 @@ if ($hour < 12) {
     $greeting = "Jó estét";
 }
 
-include __DIR__ . '/../templates/header.php';
+// TODO: adatbázisból töltjük majd
+$events = [];
+$birthdays = [];
+$namedays = [];
+$tasks = [];
+
+include __DIR__ . '/templates/header.php';
 ?>
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-12 mb-4">
-      <div class="card shadow-sm">
-        <div class="card-body text-center">
-          <h3><?= $greeting ?>, <?= htmlspecialchars($_SESSION['name']) ?>!</h3>
-          <p>Örülök, hogy újra itt vagy! Lássuk, milyen tennivalók várnak!</p>
-        </div>
-      </div>
-    </div>
-  </div>
+    <!-- Bal oldali panel: a header már tartalmazza a menüt, ezért itt nem kell külön -->
 
-  <div class="row g-4">
-    <!-- Közeli események -->
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Közeli események</h5>
-          <p>Itt fognak megjelenni a mai, holnapi és holnaputáni események.</p>
-        </div>
-      </div>
-    </div>
+    <!-- Középső tartalom -->
+    <main class="col-md-7 col-9 p-4">
+      <h2><?= $greeting ?>, <?= htmlspecialchars($_SESSION['name'] ?? $_SESSION['username']) ?>!</h2>
+      <p>Üdvözöllek virtuális irodádban, ahol az összes általad kezelt szervezetről láthatod a legfontosabb tudnivalókat.</p>
 
-    <!-- Születésnapok -->
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Születésnapok</h5>
-          <p>Itt fognak megjelenni a születésnaposok.</p>
+      <div class="row g-3">
+        <!-- Közelgő események -->
+        <div class="col-md-4">
+          <div class="card shadow p-3 h-100">
+            <h5 class="card-title">Közelgő események</h5>
+            <ul class="list-unstyled">
+              <?php if (!empty($events)): ?>
+                <?php foreach ($events as $event): ?>
+                  <li><?= htmlspecialchars($event['date']) ?> – <?= htmlspecialchars($event['title']) ?></li>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <li><em>Nincs tervben program a következő három napra.</em></li>
+              <?php endif; ?>
+            </ul>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Névnapok -->
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Névnapok</h5>
-          <p><strong>Ma:</strong> <?= !empty($today) ? implode(", ", $today) : 'nincs' ?></p>
-          <p><strong>Holnap:</strong> <?= !empty($tomorrow) ? implode(", ", $tomorrow) : 'nincs' ?></p>
-          <p><strong>Holnapután:</strong> <?= !empty($after) ? implode(", ", $after) : 'nincs' ?></p>
+        <!-- Szülinapok -->
+        <div class="col-md-4">
+          <div class="card shadow p-3 h-100">
+            <h5 class="card-title">Születésnapok</h5>
+            <ul class="list-unstyled">
+              <?php if (!empty($birthdays)): ?>
+                <?php foreach ($birthdays as $b): ?>
+                  <li><?= htmlspecialchars($b['date']) ?> – <?= htmlspecialchars($b['name']) ?></li>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <li><em>Senki sem ünnepli a születésnapját a következő három napban.</em></li>
+              <?php endif; ?>
+            </ul>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Teendők -->
-  <div class="row mt-4">
-    <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">FONTOS! Ellenőrizd az eseményeket</h5>
-          <p>Ezek az események még megerősítésre várnak. Ha nem rögzíted, automatikusan törlődnek.</p>
-          <ul>
-            <li>Próba esemény 1</li>
-            <li>Próba esemény 2</li>
-          </ul>
+        <!-- Névnapok -->
+        <div class="col-md-4">
+          <div class="card shadow p-3 h-100">
+            <h5 class="card-title">Névnapok</h5>
+            <ul class="list-unstyled">
+              <?php if (!empty($namedays)): ?>
+                <?php foreach ($namedays as $n): ?>
+                  <li><?= htmlspecialchars($n['date']) ?> – <?= htmlspecialchars($n['name']) ?></li>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <li><em>Senki sem ünnepli a névnapját a következő három napban.</em></li>
+              <?php endif; ?>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Szervezet választó -->
-  <div class="row mt-4">
-    <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-body text-center">
-          <h5>Hol kezdjük? Válassz intézményt!</h5>
-          <a href="/select_org.php" class="btn btn-primary">Szervezet választása</a>
-        </div>
+      <!-- Teendők -->
+      <div class="card shadow p-3 mt-4">
+        <h5 class="card-title">Teendők</h5>
+        <ul class="list-unstyled">
+          <?php if (!empty($tasks)): ?>
+            <?php foreach ($tasks as $task): ?>
+              <li>⚠️ <?= htmlspecialchars($task) ?></li>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <li><em>Szuper! Minden tervezett eseményt rögzítettél!</em></li>
+          <?php endif; ?>
+        </ul>
       </div>
-    </div>
-  </div>
+
+      <!-- Szervezet választás -->
+      <div class="mt-4 text-center">
+        <a href="select_org.php" class="btn btn-primary">Hol kezdjük? Válassz intézményt!</a>
+      </div>
+    </main>
+
+    <!-- Jobb oldali panel -->
+      <?php include __DIR__ . '/templates/footer.php'; ?>
+      </div>
 </div>
 
-<?php include __DIR__ . '/../templates/footer.php'; ?>
+<?php include __DIR__ . '/templates/auth_footer.php'; ?>

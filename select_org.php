@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// lekérjük a felhasználóhoz rendelt szervezeteket
+// Felhasználóhoz tartozó szervezetek lekérdezése
 $stmt = $pdo->prepare("
     SELECT o.id, o.name 
     FROM user_orgs uo
@@ -22,15 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $org_id = (int) ($_POST['org_id'] ?? 0);
     if ($org_id) {
         $_SESSION['org_id'] = $org_id;
-        $stmt = $pdo->prepare("SELECT role FROM user_orgs WHERE user_id = ? AND org_id = ?");
-		$stmt->execute([$_SESSION['user_id'], $org_id]);
-		$_SESSION['role'] = $stmt->fetchColumn();
         header("Location: index.php");
         exit;
     }
 }
 
-include __DIR__ . '/templates/auth_header.php';  // <<< FIGYELEM: auth_header
+include __DIR__ . '/templates/auth_header.php';
 ?>
 
 <div class="d-flex justify-content-center align-items-center vh-100">
@@ -51,4 +48,4 @@ include __DIR__ . '/templates/auth_header.php';  // <<< FIGYELEM: auth_header
   </div>
 </div>
 
-<?php include __DIR__ . '/templates/auth_footer.php'; // <<< FIGYELEM: auth_footer ?>
+<?php include __DIR__ . '/templates/auth_footer.php'; ?>

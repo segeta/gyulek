@@ -14,19 +14,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch();
 
     if ($user && verify_password($password, $user['password_hash'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['name'] = $user['name'];
+        $_SESSION['user_id']   = $user['id'];
+        $_SESSION['username']  = $user['username'];
+        $_SESSION['name']      = $user['name'];
 
-        // Megnézzük, admin-e?
+        // Megnézzük, hogy van-e "rendszergazda" szerepe
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM user_orgs WHERE user_id = ? AND role = 'rendszergazda'");
         $stmt->execute([$user['id']]);
         $isAdmin = $stmt->fetchColumn() > 0;
 
         if ($isAdmin) {
-            header("Location: /gyulek/modules/users/index.php");
+            header("Location: /modules/users/index.php");
         } else {
-            header("Location: select_org.php");
+            header("Location: dashboard.php");
         }
         exit;
     } else {
@@ -48,13 +48,35 @@ include __DIR__ . '/templates/auth_header.php';
         <label for="username" class="form-label">Felhasználónév</label>
         <input type="text" class="form-control" id="username" name="username" required>
       </div>
-      <div class="mb-3">
+      <div class="mb-3 position-relative">
         <label for="password" class="form-label">Jelszó</label>
-        <input type="password" class="form-control" id="password" name="password" required>
+        <div class="input-group">
+          <input type="password" class="form-control" id="password" name="password" required>
+          <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
       </div>
       <button type="submit" class="btn btn-primary w-100">Belépés</button>
     </form>
   </div>
 </div>
+
+<script>
+// Jelszó felfedés/elrejtés
+document.getElementById('togglePassword').addEventListener('click', function () {
+  const passwordField = document.getElementById('password');
+  const icon = this.querySelector('i');
+  if (passwordField.type === 'password') {
+    passwordField.type = 'text';
+    icon.classList.remove('bi-eye');
+    icon.classList.add('bi-eye-slash');
+  } else {
+    passwordField.type = 'password';
+    icon.classList.remove('bi-eye-slash');
+    icon.classList.add('bi-eye');
+  }
+});
+</script>
 
 <?php include __DIR__ . '/templates/auth_footer.php'; ?>
