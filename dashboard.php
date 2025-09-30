@@ -32,7 +32,7 @@ include __DIR__ . '/templates/header.php';
     <!-- Bal oldali panel: a header már tartalmazza a menüt, ezért itt nem kell külön -->
 
     <!-- Középső tartalom -->
-    <main class="col-md-7 col-9 p-4">
+    <main class="col-md-12 col-12 p-4">
       <h2><?= $greeting ?>, <?= htmlspecialchars($_SESSION['name'] ?? $_SESSION['username']) ?>!</h2>
       <p>Üdvözöllek virtuális irodádban, ahol az összes általad kezelt szervezetről láthatod a legfontosabb tudnivalókat.</p>
 
