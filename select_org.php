@@ -4,7 +4,7 @@ require_once __DIR__ . '/core/functions.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: org_home.php");
     exit;
 }
 
@@ -22,7 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $org_id = (int) ($_POST['org_id'] ?? 0);
     if ($org_id) {
         $_SESSION['org_id'] = $org_id;
-        header("Location: index.php");
+
+        // szerepkör betöltése a kiválasztott szervezethez
+        $stmt = $pdo->prepare("SELECT role FROM user_orgs WHERE user_id = ? AND org_id = ?");
+        $stmt->execute([$_SESSION['user_id'], $org_id]);
+        $role = $stmt->fetchColumn();
+
+        if ($role) {
+            $_SESSION['role'] = $role;
+        }
+
+        header("Location: org_home.php");
         exit;
     }
 }

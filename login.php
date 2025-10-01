@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && verify_password($password, $user['password_hash'])) {
         $_SESSION['user_id']   = $user['id'];
         $_SESSION['username']  = $user['username'];
-        $_SESSION['name']      = $user['name'];
+        $_SESSION['family_name']      = $user['family_name'];
+        $_SESSION['given_name']      = $user['given_name'];
 
         // Megnézzük, hogy van-e "rendszergazda" szerepe
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM user_orgs WHERE user_id = ? AND role = 'rendszergazda'");

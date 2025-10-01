@@ -2,7 +2,7 @@
 // Menü komponens – minden oldal tartalmazza
 ?>
 <nav class="menu" id="sidebar">
-    <a href="/gyulek/index.php" class="menu-item">
+    <a href="/gyulek/org_home.php" class="menu-item">
         <i class="bi bi-house-door"></i> <span>Kezdőlap</span>
     </a>
     <a href="/gyulek/modules/tagok/index.php" class="menu-item">
@@ -64,7 +64,8 @@
  <a href="/gyulek/dashboard.php" class="menu-item">
         <i class="bi bi-boxes"></i> <span>Íróasztal</span>
     </a>
-    
+
+
     <!-- Felhasználók -->
     <?php if ($_SESSION['role'] === 'admin'): ?>
   <a href="/gyulek/modules/users/index.php" class="menu-item">

@@ -8,9 +8,12 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Köszöntés napszak szerint
+// Felhasználói adatok
+$userName = $_SESSION['given_name'] ?? $_SESSION['username'];
+
+// Dinamikus köszöntés napszak szerint
 $hour = (int)date('H');
-if ($hour < 9) {
+if ($hour < 12) {
     $greeting = "Jó reggelt";
 } elseif ($hour < 18) {
     $greeting = "Jó napot";
@@ -18,78 +21,163 @@ if ($hour < 9) {
     $greeting = "Jó estét";
 }
 
+// --- Közelgő események ---
+$stmt = $pdo->prepare("
+    SELECT e.start, e.location, et.name AS type, o.name AS org_name
+    FROM events e
+    JOIN event_types et ON e.type_id = et.id
+    JOIN organizations o ON e.org_id = o.id
+    WHERE e.org_id IN (
+        SELECT org_id FROM user_orgs WHERE user_id = ?
+    )
+    AND DATE(e.start) BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 DAY)
+    ORDER BY e.start ASC
+");
+$stmt->execute([$_SESSION['user_id']]);
+$events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$groupedEvents = ['today' => [], 'tomorrow' => [], 'dayafter' => []];
+foreach ($events as $event) {
+    $date = date('Y-m-d', strtotime($event['start']));
+    if ($date === date('Y-m-d')) {
+        $groupedEvents['today'][] = $event;
+    } elseif ($date === date('Y-m-d', strtotime('+1 day'))) {
+        $groupedEvents['tomorrow'][] = $event;
+    } elseif ($date === date('Y-m-d', strtotime('+2 day'))) {
+        $groupedEvents['dayafter'][] = $event;
+    }
+}
+
+// --- Születésnaposok ---
+$stmt = $pdo->prepare("
+    SELECT 
+        m.id, 
+        m.name, 
+        m.birth_date,
+        TIMESTAMPDIFF(YEAR, m.birth_date, CURDATE()) AS age
+    FROM members m
+    WHERE m.org_id IN (
+        SELECT org_id FROM user_orgs WHERE user_id = ?
+    )
+    AND DATE_FORMAT(m.birth_date, '%m-%d') BETWEEN DATE_FORMAT(CURDATE(), '%m-%d')
+                                               AND DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 2 DAY), '%m-%d')
+    ORDER BY MONTH(m.birth_date), DAY(m.birth_date)
+");
+$stmt->execute([$_SESSION['user_id']]);
+$birthdays = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$groupedBirthdays = ['today' => [], 'tomorrow' => [], 'dayafter' => []];
+foreach ($birthdays as $p) {
+    $monthDay = date('m-d', strtotime($p['birth_date']));
+    if ($monthDay === date('m-d')) {
+        $groupedBirthdays['today'][] = $p;
+    } elseif ($monthDay === date('m-d', strtotime('+1 day'))) {
+        $groupedBirthdays['tomorrow'][] = $p;
+    } elseif ($monthDay === date('m-d', strtotime('+2 day'))) {
+        $groupedBirthdays['dayafter'][] = $p;
+    }
+}
+
+// --- Névnapok: csak a footerben, itt most nincs ---
+
 include __DIR__ . '/templates/header.php';
 ?>
 
 <main class="col-md-12 col-12 p-4">
-  <h2><?= $greeting ?>, <?= htmlspecialchars($_SESSION['given_name'] ?? $_SESSION['username']) ?>!</h2>
-  <p>Örülök, hogy újra itt vagy! Lássuk, milyen tennivalók várnak!</p>
+    <h2><?= $greeting ?>, <?= htmlspecialchars($userName) ?>!</h2>
+    <p>Üdvözöllek a virtuális irodádban, ahol az általad kezelt egyházszervezetek fontos információit láthatod.</p>
 
-  <div class="row g-3">
-    <!-- Bal oldal 2/3 -->
-    <div class="col-md-8">
+    <div class="row">
+        <!-- Bal oldal (2/3) -->
+        <div class="col-md-8">
+            <!-- Közelgő események -->
+            <div class="card shadow p-3 mb-4">
+                <h4>Közelgő események</h4>
+                <div class="row">
+                    <div class="col">
+                        <h6>Ma</h6>
+                        <ul>
+                            <?php if (empty($groupedEvents['today'])): ?>
+                                <li>Nincs esemény mára.</li>
+                            <?php else: ?>
+                                <?php foreach ($groupedEvents['today'] as $event): ?>
+                                    <li><?= date('H:i', strtotime($ev['start'])) ?> – <?= htmlspecialchars($event['type']) ?> (<?= htmlspecialchars($event['location']) ?>)</li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h6>Holnap</h6>
+                        <ul>
+                            <?php if (empty($groupedEvents['tomorrow'])): ?>
+                                <li>Nincs esemény holnapra.</li>
+                            <?php else: ?>
+                                <?php foreach ($groupedEvents['tomorrow'] as $event): ?>
+                                    <li><?= date('H:i', strtotime($ev['start'])) ?> – <?= htmlspecialchars($event['type']) ?> (<?= htmlspecialchars($event['location']) ?>)</li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <h6>Holnapután</h6>
+                        <ul>
+                            <?php if (empty($groupedEvents['dayafter'])): ?>
+                                <li>Nincs esemény holnaputánra.</li>
+                            <?php else: ?>
+                                <?php foreach ($groupedEvents['dayafter'] as $event): ?>
+                                    <li><?= date('H:i', strtotime($ev['start'])) ?> – <?= htmlspecialchars($event['type']) ?> (<?= htmlspecialchars($event['location']) ?>)</li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-      <!-- Közelgő események -->
-      <div class="card shadow p-3 mb-3">
-        <h5 class="card-title">Közelgő események</h5>
-        <div class="row">
-          <div class="col-md-4">
-            <h6>Ma</h6>
-            <ul class="list-unstyled">
-              <li>08:00 – Hittan óra (Apostag)</li>
-              <li>09:00 – Tárgyalás (Budapest)</li>
-              <li>16:30 – Áhítat (Kiskőrös)</li>
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <h6>Holnap</h6>
-            <ul class="list-unstyled">
-              <li>Nincs esemény</li>
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <h6>Holnapután</h6>
-            <ul class="list-unstyled">
-              <li>18:00 – Közgyűlés (Soltvadkert)</li>
-            </ul>
-          </div>
+            <!-- Tennivalók -->
+            <div class="card shadow p-3 mb-4">
+                <h4>Teendők</h4>
+                <p><i class="bi bi-exclamation-circle text-warning"></i> Minden eseményt rögzítettél, nincs elmaradásod.</p>
+            </div>
         </div>
-      </div>
 
-      <!-- Tennivalók -->
-      <div class="card shadow p-3">
-        <h5 class="card-title">Tennivalók</h5>
-        <p>Szuper! Minden tervezett eseményt rögzítettél!</p>
-      </div>
+        <!-- Jobb oldal (1/3) -->
+        <div class="col-md-4">
+            <!-- Születésnaposok -->
+            <!-- Születésnaposok -->
+<div class="card shadow p-3 mb-4">
+    <h4>Születésnaposok</h4>
+    <div>
+        <?php 
+        $labels = ['today' => 'Ma', 'tomorrow' => 'Holnap', 'dayafter' => 'Holnapután'];
+        foreach ($labels as $day => $label): ?>
+            <h6><?= $label ?></h6>
+            <ul>
+                <?php if (empty($groupedBirthdays[$day])): ?>
+                    <li>Senki sem ünnepel <?= strtolower($label) ?>.</li>
+                <?php else: ?>
+                    <?php foreach ($groupedBirthdays[$day] as $p): ?>
+                        <li>
+                            <?= htmlspecialchars($p['name']) ?> 
+                            (<?= $p['age'] + ($day === 'tomorrow' || $day === 'dayafter' ? 1 : 0) ?>)
+                        </li>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </ul>
+        <?php endforeach; ?>
     </div>
+</div>
 
-    <!-- Jobb oldal 1/3 -->
-    <div class="col-md-4">
-      <!-- Születésnapok -->
-      <div class="card shadow p-3 mb-3">
-        <h5 class="card-title">Születésnaposok</h5>
-        <ul class="list-unstyled">
-          <li>Ma: Komáromi Petra Gabriella</li>
-          <li>Holnap: Jakab Béla</li>
-          <li>Holnapután: Kis Péter, Rózsa Mária</li>
-        </ul>
-      </div>
-
-      <!-- Névnapok -->
-      <div class="card shadow p-3">
-        <h5 class="card-title">Névnapok</h5>
-        <ul class="list-unstyled">
-          <li>Ma: Mihály, Rafael</li>
-          <li>Holnap: Malvin</li>
-          <li>Holnapután: Petra</li>
-        </ul>
-      </div>
+            <!-- Névnaposok -->
+            <div class="card shadow p-3 mb-4">
+                <h4>Névnaposok</h4>
+                <p>A névnaposok listája itt fog megjelenni (a members tábla keresztnév bontása után).</p>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <!-- Intézmény választás gomb -->
-  <div class="text-center mt-4">
-    <a href="select_org.php" class="btn btn-primary">Hol kezdjük? Válassz intézményt!</a>
+    <div class="row mt-4">
+    <div class="col text-center">
+      <a href="select_org.php" class="btn btn-primary">Hol kezdjük? Válassz intézményt!</a>
+    </div>
   </div>
 </main>
 
