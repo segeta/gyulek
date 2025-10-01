@@ -60,6 +60,11 @@
         </div>
     </div>
 
+	<!-- Vissza a Dashboardra -->
+ <a href="/gyulek/dashboard.php" class="menu-item">
+        <i class="bi bi-boxes"></i> <span>Íróasztal</span>
+    </a>
+    
     <!-- Felhasználók -->
     <?php if ($_SESSION['role'] === 'admin'): ?>
   <a href="/gyulek/modules/users/index.php" class="menu-item">
