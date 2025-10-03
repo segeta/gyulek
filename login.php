@@ -18,18 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['username']  = $user['username'];
         $_SESSION['family_name']      = $user['family_name'];
         $_SESSION['given_name']      = $user['given_name'];
+        $_SESSION['user_permission'] = $user['user_permission']; // EZ HIÁNYZIK
 
-        // Megnézzük, hogy van-e "rendszergazda" szerepe
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM user_orgs WHERE user_id = ? AND role = 'rendszergazda'");
-        $stmt->execute([$user['id']]);
-        $isAdmin = $stmt->fetchColumn() > 0;
-
-        if ($isAdmin) {
-            header("Location: /modules/users/index.php");
-        } else {
-            header("Location: dashboard.php");
-        }
-        exit;
+       header("Location: dashboard.php");
+       exit;
     } else {
         $error = "Hibás felhasználónév vagy jelszó!";
     }
