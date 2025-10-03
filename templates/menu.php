@@ -1,107 +1,122 @@
-<?php
-// Menü komponens – minden oldal tartalmazza
-?>
-<nav class="menu" id="sidebar">
-    <a href="/gyulek/org_home.php" class="menu-item">
-        <i class="bi bi-house-door"></i> <span>Kezdőlap</span>
-    </a>
-    <a href="/gyulek/modules/tagok/index.php" class="menu-item">
-        <i class="bi bi-people"></i> <span>Tagok</span>
-    </a>
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 250px;">
+    <h5 class="mb-3">Menü</h5>
+    <ul class="nav nav-pills flex-column mb-auto" id="mainMenu">
 
-    <!-- Események submenu -->
-    <div class="menu-item submenu">
-        <a href="#" class="submenu-toggle d-flex align-items-center">
-            <i class="bi bi-calendar-event"></i> 
-            <span class="flex-grow-1">Események</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <div class="submenu-items collapse ps-4">
-            <a href="/gyulek/modules/esemenyek/index.php" class="submenu-item">
-                <i class="bi bi-calendar3"></i> <span>Naptár</span>
+        <!-- Kezdőlap -->
+        <li>
+            <a href="/gyulek/org_home.php" class="nav-link">
+                <span><i class="bi bi-house-door"></i> Kezdőlap</span>
             </a>
-            <a href="/gyulek/modules/esemenyek/add.php" class="submenu-item">
-                <i class="bi bi-plus-circle"></i> <span>Új esemény</span>
+        </li>
+
+        <!-- Tagok -->
+        <li>
+            <a class="nav-link d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse" href="#submenuTagok" role="button" aria-expanded="false">
+                <span><i class="bi bi-people"></i> Tagok</span>
+                <i class="bi bi-chevron-down small rotate-icon"></i>
             </a>
-        </div>
-    </div>
+            <div class="collapse" id="submenuTagok" data-bs-parent="#mainMenu">
+                <a href="/gyulek/modules/tagok/index.php" class="nav-link ms-4"><i class="bi bi-list-ul"></i> Áttekintés</a>
+                <a href="/gyulek/modules/tagok/add.php" class="nav-link ms-4"><i class="bi bi-plus-circle"></i> Új tag</a>
+                <a href="/gyulek/modules/tagok/search.php" class="nav-link ms-4"><i class="bi bi-search"></i> Keresés/Szűrés</a>
+                <a href="/gyulek/modules/tagok/stats.php" class="nav-link ms-4"><i class="bi bi-bar-chart"></i> Statisztika</a>
+            </div>
+        </li>
 
-    <!-- Adományok submenu -->
-    <div class="menu-item submenu">
-        <a href="#" class="submenu-toggle d-flex align-items-center">
-            <i class="bi bi-cash-stack"></i> 
-            <span class="flex-grow-1">Adományok</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <div class="submenu-items collapse ps-4">
-            <a href="/gyulek/modules/adomanyok/index.php" class="submenu-item">
-                <i class="bi bi-bar-chart"></i> <span>Statisztika</span>
+        <!-- Események -->
+        <li>
+            <a class="nav-link d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse" href="#submenuEsemenyek" role="button" aria-expanded="false">
+                <span><i class="bi bi-calendar-event"></i> Események</span>
+                <i class="bi bi-chevron-down small rotate-icon"></i>
             </a>
-            <a href="/gyulek/modules/adomanyok/add.php" class="submenu-item">
-                <i class="bi bi-plus-circle"></i> <span>Új adomány</span>
+            <div class="collapse" id="submenuEsemenyek" data-bs-parent="#mainMenu">
+                <a href="/gyulek/modules/esemenyek/index.php" class="nav-link ms-4"><i class="bi bi-list-ul"></i> Áttekintés</a>
+                <a href="/gyulek/modules/esemenyek/add.php" class="nav-link ms-4"><i class="bi bi-plus-circle"></i> Új esemény</a>
+                <a href="/gyulek/modules/esemenyek/search.php" class="nav-link ms-4"><i class="bi bi-search"></i> Keresés/Szűrés</a>
+                <a href="/gyulek/modules/esemenyek/stats.php" class="nav-link ms-4"><i class="bi bi-bar-chart"></i> Statisztika</a>
+            </div>
+        </li>
+
+        <!-- Adományok -->
+        <li>
+            <a class="nav-link d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse" href="#submenuAdomanyok" role="button" aria-expanded="false">
+                <span><i class="bi bi-cash-coin"></i> Adományok</span>
+                <i class="bi bi-chevron-down small rotate-icon"></i>
             </a>
-        </div>
-    </div>
+            <div class="collapse" id="submenuAdomanyok" data-bs-parent="#mainMenu">
+                <a href="/gyulek/modules/adomanyok/index.php" class="nav-link ms-4"><i class="bi bi-list-ul"></i> Áttekintés</a>
+                <a href="/gyulek/modules/adomanyok/add.php" class="nav-link ms-4"><i class="bi bi-plus-circle"></i> Új adomány</a>
+                <a href="/gyulek/modules/adomanyok/search.php" class="nav-link ms-4"><i class="bi bi-search"></i> Keresés/Szűrés</a>
+                <a href="/gyulek/modules/adomanyok/stats.php" class="nav-link ms-4"><i class="bi bi-bar-chart"></i> Statisztika</a>
+            </div>
+        </li>
 
-    <!-- Iratkezelés submenu -->
-    <div class="menu-item submenu">
-        <a href="#" class="submenu-toggle d-flex align-items-center">
-            <i class="bi bi-folder2"></i> 
-            <span class="flex-grow-1">Iratkezelés</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <div class="submenu-items collapse ps-4">
-            <a href="/gyulek/modules/iratok/index.php" class="submenu-item">
-                <i class="bi bi-archive"></i> <span>Iratlista</span>
+        <!-- Iratkezelés -->
+        <li>
+            <a class="nav-link d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse" href="#submenuIratok" role="button" aria-expanded="false">
+                <span><i class="bi bi-folder"></i> Iratkezelés</span>
+                <i class="bi bi-chevron-down small rotate-icon"></i>
             </a>
-            <a href="/gyulek/modules/iratok/add.php" class="submenu-item">
-                <i class="bi bi-plus-circle"></i> <span>Új irat</span>
+            <div class="collapse" id="submenuIratok" data-bs-parent="#mainMenu">
+                <a href="/gyulek/modules/iratok/index.php" class="nav-link ms-4"><i class="bi bi-list-ul"></i> Áttekintés</a>
+                <a href="/gyulek/modules/iratok/add.php" class="nav-link ms-4"><i class="bi bi-plus-circle"></i> Új irat</a>
+                <a href="/gyulek/modules/iratok/search.php" class="nav-link ms-4"><i class="bi bi-search"></i> Keresés/Szűrés</a>
+                <a href="/gyulek/modules/iratok/stats.php" class="nav-link ms-4"><i class="bi bi-bar-chart"></i> Statisztika</a>
+            </div>
+        </li>
+
+        <!-- Jelentések -->
+        <li>
+            <a class="nav-link d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse" href="#submenuJelentesek" role="button" aria-expanded="false">
+                <span><i class="bi bi-clipboard-data"></i> Jelentések</span>
+                <i class="bi bi-chevron-down small rotate-icon"></i>
             </a>
-        </div>
-    </div>
+            <div class="collapse" id="submenuJelentesek" data-bs-parent="#mainMenu">
+                <a href="/gyulek/modules/jelentesek/index.php" class="nav-link ms-4"><i class="bi bi-list-ul"></i> Áttekintés</a>
+                <a href="/gyulek/modules/jelentesek/add.php" class="nav-link ms-4"><i class="bi bi-plus-circle"></i> Új jelentés</a>
+                <a href="/gyulek/modules/jelentesek/search.php" class="nav-link ms-4"><i class="bi bi-search"></i> Keresés/Szűrés</a>
+                <a href="/gyulek/modules/jelentesek/stats.php" class="nav-link ms-4"><i class="bi bi-bar-chart"></i> Statisztika</a>
+            </div>
+        </li>
 
-	<!-- Vissza a Dashboardra -->
- <a href="/gyulek/dashboard.php" class="menu-item">
-        <i class="bi bi-boxes"></i> <span>Íróasztal</span>
-    </a>
+        <!-- Íróasztal -->
+        <li>
+            <a href="/gyulek/dashboard.php" class="nav-link">
+                <i class="bi bi-grid-3x3-gap"></i> Íróasztal
+            </a>
+        </li>
 
+        <hr>
 
-    <!-- Felhasználók -->
-    <?php if ($_SESSION['role'] === 'admin'): ?>
-  <a href="/gyulek/modules/users/index.php" class="menu-item">
-    <i class="bi bi-person-gear"></i> <span>Felhasználók</span>
-  </a>
-<?php else: ?>
-  <a href="/gyulek/modules/settings/profile.php" class="menu-item">
-    <i class="bi bi-gear"></i> <span>Beállítások</span>
-  </a>
-<?php endif; ?>
+        <!-- Beállítások -->
+        <li>
+            <a href="/gyulek/modules/settings/profile.php" class="nav-link">
+                <i class="bi bi-gear"></i> Beállítások
+            </a>
+        </li>
 
-       <!-- Dark mode -->
-    <div class="menu-item mt-auto">
-        <label style="cursor:pointer; display:flex; align-items:center;">
-            <input type="checkbox" id="darkModeToggle" style="margin-right:8px;">
-            <i class="bi bi-moon"></i> <span>Dark Mode</span>
-        </label>
-    </div>
-</nav>
+        <!-- Rendszerkezelés (csak rendszergazda) -->
+        <?php if ($_SESSION['user_permission'] === 'rendszergazda'): ?>
+        <li>
+            <a href="/gyulek/modules/admin/index.php" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Rendszerkezelés
+            </a>
+        </li>
+        <?php endif; ?>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  document.querySelectorAll(".submenu-toggle").forEach(toggle => {
-    toggle.addEventListener("click", function(e) {
-      e.preventDefault();
-      const submenu = this.nextElementSibling;
-      submenu.classList.toggle("show");
+    </ul>
+</div>
 
-      // Chevron ikon váltása
-      const icon = this.querySelector(".bi-chevron-down, .bi-chevron-up");
-      if (submenu.classList.contains("show")) {
-        icon.classList.replace("bi-chevron-down", "bi-chevron-up");
-      } else {
-        icon.classList.replace("bi-chevron-up", "bi-chevron-down");
-      }
-    });
-  });
-});
-</script>
+<style>
+.rotate-icon {
+    transition: transform 0.2s;
+}
+a[aria-expanded="true"] .rotate-icon {
+    transform: rotate(180deg);
+}
+</style>

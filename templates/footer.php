@@ -20,7 +20,7 @@ if (!empty($_SESSION['user_id'])) {
 // ha váltás történt
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['org_id'])) {
     $_SESSION['org_id'] = (int)$_POST['org_id'];
-    header("Location: /gyulek/org_home.php");
+    header("Location: /../org_home.php");
     exit;
 }
 
