@@ -102,11 +102,11 @@
 
         <!-- Rendszerkezelés (csak rendszergazda) -->
         <?php if ($_SESSION['user_permission'] === 'rendszergazda'): ?>
-        <li>
-            <a href="/gyulek/modules/admin/index.php" class="nav-link">
-                <i class="bi bi-shield-lock"></i> Rendszerkezelés
-            </a>
-        </li>
+        <li class="nav-item">
+			 <a href="/gyulek/modules/admin/index.php" class="nav-link text-danger fw-bold">
+    	<i class="bi bi-shield-lock"></i> Rendszerkezelés
+   			</a>
+		</li>
         <?php endif; ?>
 
     </ul>
