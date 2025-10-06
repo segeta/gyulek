@@ -106,7 +106,7 @@ include __DIR__ . '/../../../templates/header.php';
 
       <div class="row mb-3">
         <div class="col">
-          <label class="form-label">EÚj dokumentum.txtgyházszervezet</label>
+          <label class="form-label">Egyházszervezet</label>
           <input list="orgs" name="org_name" class="form-control">
           <datalist id="orgs">
             <?php foreach ($orgs as $org): ?>

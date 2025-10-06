@@ -25,7 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['org_id'])) {
 }
 
 // mai dátum
-$today = strftime("%Y. %B %d. %A", time());
+$formatter = new IntlDateFormatter(
+		'hu_HU',
+		IntlDateFormatter::FULL,
+		IntlDateFormatter::NONE,
+		'Europe/Budapest',
+		IntlDateFormatter::GREGORIAN,
+		"y. MMMM d., EEEE"
+);
+$today = $formatter->format(new DateTime());
 
 // névnap (korábban beállított logikával)
 $namedayText = "";
